@@ -154,7 +154,6 @@ public class newswallControl_grid1 : MonoBehaviour {
 	private				bool				actionButton_fade=false;
 	private				bool				actionButton_switch=false;
 	
-
 	private				bool				fadeOut=false;
 	private				bool				fader=false;
 	
@@ -233,10 +232,11 @@ public class newswallControl_grid1 : MonoBehaviour {
 		infoTile_orgPos = infoTile.transform.position;
 		infoTile.transform.position += new Vector3(-20F,0F,0F);
 		
+
+		
 		
 		for ( int i=0 ; i < gridTiles.Length ; i++ ) 
 		{
-			
 			gridTiles_position[i] = Cam.camera.WorldToViewportPoint(gridTiles[i].transform.position);
 			
 			gridTiles_screenPosition[i] = Cam.camera.WorldToScreenPoint(gridTiles[i].transform.position);
@@ -258,12 +258,8 @@ public class newswallControl_grid1 : MonoBehaviour {
 			gridTiles_endX[i] = (int) gridTiles_screenPosition[i].x + (gridTiles_width[i]/2) - 30;
 			
 			readmoreTile_fadeBool[i] = false;
-			
 			readmoreTile_readyBool[i] = false;
-			
 		}
-		
-		
 		
 		outerGrid.renderer.material.color = new Color(0.0f,0.0f,0.0f,1.0f);
 		
@@ -272,20 +268,15 @@ public class newswallControl_grid1 : MonoBehaviour {
 			innerGrid.renderer.materials[j].color = new Color(0.0f,0.0f,0.0f,1.0f);
 		}
 		
-		
 		StartCoroutine(loadTilesTexture());
 		
 		TouchVector.x=1000F;
 		TouchVector.y=1000F;
-		
-		
-	
 	}
 	
 	
 	
 	public IEnumerator loadTilesTexture() {
-		
 		
 		yield return grid_identifier_www;
 		
@@ -296,19 +287,15 @@ public class newswallControl_grid1 : MonoBehaviour {
 		
 		if (gridTiles_tileType_www.isDone)
 		{
-		
 			gridTiles_tileType = gridTiles_tileType_www.text;
 			
 			gridTiles_tileTypeArr = gridTiles_tileType.Split('\n');
-			
 		}
-		
 		
 		yield return gridTiles_www;
 		
 		if (gridTiles_www.isDone)
 		{
-			
 			gridTiles_imageList = gridTiles_www.text;
 			
 			gridTiles_imageListArr = gridTiles_imageList.Split('\n');
@@ -317,37 +304,29 @@ public class newswallControl_grid1 : MonoBehaviour {
 			
 			gridTiles_texture = new Texture2D[gridTiles_imageListArr.Length];
 			
-			
 			for (int i = 0 ; i < gridTiles_texture.Length ; i++)
 			{
-			   
 				gridTiles_imageWWW[i] = new WWW(gridTiles_imageListArr[i]);
 				
 				yield return gridTiles_imageWWW[i];
 				
-				gridTiles_texture[i] = gridTiles_imageWWW[i].texture; 
-							
+				gridTiles_texture[i] = gridTiles_imageWWW[i].texture; 			
 			}
-			
 			
 			if (gridTiles_imageWWW[gridTiles.Length-1].progress > 0.9f) loaderTile_progressBool = true;
 			
 			int x = 0;
 			
 			for (int i = 0 ; i < gridTiles_texture.Length ; i++)
-			{
-				
-				 if ( gridTiles_imageWWW[i].isDone ) x++;
-						
+			{	
+				 if ( gridTiles_imageWWW[i].isDone ) x++;		
 			}
 						
 			
 			if (x==gridTiles_texture.Length)
-			{
-				
+			{	
 				for (int i = 0 ; i < gridTiles_texture.Length ; i++)
 				{
-					
 					gridTiles[i].renderer.material.mainTexture = gridTiles_texture[i];
 					
 					if (gridTiles_texture[i].height > gridTiles_height[i])
@@ -366,31 +345,22 @@ public class newswallControl_grid1 : MonoBehaviour {
 						gridTiles_offsetstartStore[i] = gridTiles[i].renderer.material.mainTextureOffset.y;
 						
 						icon_countLength += 1;
-						
-				
 					}
 					
 					if (gridTiles_texture[i].width > gridTiles_width[i])
 					{
-						
 						gridTiles[i].renderer.material.SetTextureScale ("_MainTex", new Vector2( (1F/gridTiles_texture[i].width)*gridTiles_width[i] , 1F  ));
 						
 						gridTiles[i].renderer.material.SetTextureOffset("_MainTex", new Vector2( 1F - (1F/gridTiles_texture[i].width)*gridTiles_width[i] , 0.0F  ));
-
-						
 					}
-					
 				}
 				
 				int n = 0;
 				
 				icon_checkList = new int[icon_countLength];
 				
-				
 				   for (int j = 0 ; j < gridTiles_texture.Length ; j++)
 				   {
-					
-					 
 					 if (gridTiles_tileTypeArr[j]=="switch" || gridTiles_tileTypeArr[j]=="switchphoto" || gridTiles_tileTypeArr[j]=="switchinfo" || gridTiles_tileTypeArr[j]=="switchaudio")
 					 {
 						gridTiles[j].renderer.material.SetTextureOffset("_MainTex",new Vector2(0F,0F));
@@ -398,18 +368,13 @@ public class newswallControl_grid1 : MonoBehaviour {
 					
 				     if (gridTiles_texture[j].height > gridTiles_height[j])
 					 {
-						
 						n++;	
-					
-						icon_checkList[n-1] = j;	
-							
-					 }
-						
+						icon_checkList[n-1] = j;		
+					 }	
 				   }
 					
 				
 				if (icon_checkList.Length>0) icon_current = icon_checkList[0];
-				
 				
 				readmoreTile = new GameObject[gridTiles.Length];
 				actionButton = new GameObject[gridTiles.Length];
@@ -424,8 +389,6 @@ public class newswallControl_grid1 : MonoBehaviour {
 					if (gridTiles_tileTypeArr[j]=="switchinfo") actionButton[j].renderer.material = actionButton_infoIcon;
 					
 					actionButton[j].renderer.material.color = new Color(0f,0f,0f,0.0f);
-					
-					
 					readmoreTile[j] = Instantiate(actionButton_template, new Vector3(actionButton_template.transform.position.x, actionButton_template.transform.position.y, actionButton_template.transform.position.z), Quaternion.identity) as GameObject;
 					
 					readmoreTile[j].SetActiveRecursively(false);
@@ -437,7 +400,6 @@ public class newswallControl_grid1 : MonoBehaviour {
 					readmoreTile[j].renderer.material = readmoreTile_readIcon;
 					readmoreTile[j].renderer.material.color -= new Color(0F,0F,0F,1F);
 					readmoreTile[j].transform.localScale = new Vector3(0F,readmoreTile[j].transform.localScale.y,0F);
-				
 				}
 				
 				
@@ -448,7 +410,6 @@ public class newswallControl_grid1 : MonoBehaviour {
 						actionButton[j].transform.position = new Vector3(gridTiles[j].transform.position.x,gridTiles[j].transform.position.y+1F,gridTiles[j].transform.position.z);
 						actionButton[j].transform.localScale = new Vector3(2.55f,1f,2.55f);
 					 }	
-					
 				}
 			}
 		}
@@ -516,18 +477,15 @@ public class newswallControl_grid1 : MonoBehaviour {
 					}
 				}
 		
-		       
-		          icon_scrollUp.SetActiveRecursively(false);
-				  icon_scrollDown.SetActiveRecursively(false);
-				    
+		        icon_scrollUp.SetActiveRecursively(false);
+				icon_scrollDown.SetActiveRecursively(false);    
 	  }			
 			  
 		
 	
 	
 	void fadeAllIn(float startTime, float duration, int i)
-	{
-			
+	{	
 			if (Time.timeSinceLevelLoad > startTime)
 			{
 				if (!fadeAllBool && loaderTile.renderer.material.color.a <= 0.0f)
@@ -537,7 +495,6 @@ public class newswallControl_grid1 : MonoBehaviour {
 	        	{
 		      		outerGrid.renderer.material.color+= new Color((Time.fixedDeltaTime*duration)/3.5f,(Time.fixedDeltaTime*duration)/3.5f,(Time.fixedDeltaTime*duration)/3.5f,0.0f);
 				}
-				
 				
 				for ( int j=0;j<innerGrid.renderer.materials.Length;j++)
 				{
@@ -558,7 +515,6 @@ public class newswallControl_grid1 : MonoBehaviour {
 						}
 				}
 				
-				
 				for ( int x = 0; x < i ; x++ )
 				{
 				  	if (gridTiles[x].renderer.material.color.r < 1.0f) 
@@ -567,7 +523,6 @@ public class newswallControl_grid1 : MonoBehaviour {
 				  	}
 				  		if (gridTiles[x].renderer.material.color.r >= 1.0f)  fadeAllBool = true;
 				 }
-				
 				
 			  }
 					
@@ -630,17 +585,14 @@ public class newswallControl_grid1 : MonoBehaviour {
 						}
 					}
 								
-				break;
-					
+				break;	
 			}
-		
 		}
 	}
 	
 	
 	void progressLoader()
 	{
-		
 		if (bootCount==0)
 	  	{	
 			if (loaderTile_navBool)
@@ -657,23 +609,22 @@ public class newswallControl_grid1 : MonoBehaviour {
 				}
 			}
 	  
-			if ( Time.time > (loaderTile_nav_timeStore+12F) && !loaderTile_navBool)
+			if ( Time.time > (loaderTile_nav_timeStore+10F) && !loaderTile_navBool)
 			{
 				if (loaderTile_nav.renderer.material.color.a > 0.0f)
 	 			{
 		   			loaderTile_nav.renderer.material.color -= new Color(0F,0F,0F,(Time.fixedDeltaTime*7F)/3.5f);
 				}
 			}		
-		
 	     }
 		
 		
-	 //if (bootCount==1 && navHistory!=1)
-	 if (bootCount==1)		
+	 if (bootCount==1 && navHistory!=1)
+	 //if (bootCount==1)		
 	  {
-		
 			if (loaderTile_navBoot)
 			{
+			//	loaderTile_nav.renderer.material.color-=new Color(0f,0f,0f,0.5f);
 				loaderTile_nav.transform.localScale = new Vector3(13.33F,1F,3.33F);
 				//loaderTile_nav.transform.position += new Vector3(-11F,0F,-17.5f);
 				
@@ -682,29 +633,28 @@ public class newswallControl_grid1 : MonoBehaviour {
 			
 			if (loaderTile_navBool)
 			{
-				if (loaderTile_nav.renderer.material.color.a < 1.0f)
+				if (loaderTile_nav.renderer.material.color.a < 0.5f)
 	 			{
 		   			loaderTile_nav.renderer.material.color += new Color(0F,0F,0F,(Time.fixedDeltaTime*7F)/6.5f);
 				}
 			
-				if (loaderTile_nav.renderer.material.color.a>1F) 
+				if (loaderTile_nav.renderer.material.color.a>=0.5F) 
 				{ 
 					loaderTile_navBool=false; 
 					loaderTile_nav_timeStore = Time.time; 
 				}
 			}
 			
-			if ( Time.time > (loaderTile_nav_timeStore+3F) && !loaderTile_navBool)
+			if ( Time.time > (loaderTile_nav_timeStore+1F) && !loaderTile_navBool)
 			{
 				if (loaderTile_nav.renderer.material.color.a > 0.0f)
 	 			{
-		   			loaderTile_nav.renderer.material.color -= new Color(0F,0F,0F,(Time.fixedDeltaTime*7F)/3.5f);
+		   			loaderTile_nav.renderer.material.color -= new Color(0F,0F,0F,(Time.fixedDeltaTime*0.3F)/0.5f);
 				}
 			}
 		
 		}
 		
-	
 	 	if (loaderTile_bool)
 	 	{
 			loaderTile.transform.Rotate(new Vector3(0.0f,Time.fixedDeltaTime*500F,0.0f));
@@ -716,8 +666,6 @@ public class newswallControl_grid1 : MonoBehaviour {
 		   
 			}
 	  	}
-		
-		
 			
 	  	if (loaderTile_progressBool)
 	  	{
@@ -731,8 +679,7 @@ public class newswallControl_grid1 : MonoBehaviour {
 			}	
 	  	 }
 			
-		 if (loaderTile.renderer.material.color.a <= 0.0f && loaderTile_nav.renderer.material.color.a <= 0.0f)	{ loaderTile_boolExec = false; allClear = true; PlayerPrefs.SetInt("navHistory",0); }	
-	
+		 if (loaderTile.renderer.material.color.a <= 0.0f && loaderTile_nav.renderer.material.color.a <= 0.0f)	{ loaderTile_boolExec = false; allClear = true; PlayerPrefs.SetInt("navHistory",0); }
 	}
 	
 	
@@ -741,15 +688,17 @@ public class newswallControl_grid1 : MonoBehaviour {
 	// Update is called once per frame
 	
 	void Update () {
-	  
-	  
+	   
+	  if (grid_identifier=="bioGrid2" || grid_identifier=="gitaarGrid" || grid_identifier=="drumsGrid" || grid_identifier=="keyboardGrid" || grid_identifier=="vioolGrid" || grid_identifier=="youriGrid")
+	  {	
+         PlayerPrefs.SetInt("navHistory",1);
+	  }
 		
 	  if (loaderTile_boolExec) progressLoader();	
 		
 	  if (allClear)
-	  {
-						
-		checkBackSwipe(200F,50F,0.1F,1F);	
+	  {				
+		checkBackSwipe(300F,50F,0.1F,1F);	
 	
 		fadeAllIn(1.0f,4.0f,gridTiles.Length);
 		
@@ -767,7 +716,6 @@ public class newswallControl_grid1 : MonoBehaviour {
 			{
 				fadeAllOut(14F);
 					
-				
 				if (outerGrid.renderer.material.color.r<=0.0f) 
 				{ 
 					if (grid_identifier=="bioGrid2" || grid_identifier=="gitaarGrid" || grid_identifier=="drumsGrid" || grid_identifier=="keyboardGrid" || grid_identifier=="vioolGrid" || grid_identifier=="youriGrid")
@@ -780,7 +728,7 @@ public class newswallControl_grid1 : MonoBehaviour {
 						Application.LoadLevel("mainGrid");
 					}
 				}
-			}				
+			 }				
 		  }
 			
 		
@@ -810,12 +758,11 @@ public class newswallControl_grid1 : MonoBehaviour {
 					break;
 				}
 			}
-			
 				
 			if (infoTile_execBool)
 			{	
 		    	if (Time.time > (icon_startTime + 2.4F))
-				{
+				{										
 					infoTile.transform.position = Vector3.Lerp(infoTile.transform.position,infoTile_orgPos,Time.fixedDeltaTime*5F);
 					
 					if (infoTile.transform.position==infoTile_orgPos)
@@ -847,7 +794,6 @@ public class newswallControl_grid1 : MonoBehaviour {
 					{
 						if (icon_currentBool)
 						{
-						
 				    		icon_scrollUp.transform.position = Cam.camera.ScreenToWorldPoint(new Vector3(gridTiles_screenPosition[icon_current].x,gridTiles_screenPosition[icon_current].y+(gridTiles_height[icon_current]/2)-30F,gridTiles_screenPosition[icon_current].z));
 						
 							icon_scrollDown.transform.position = Cam.camera.ScreenToWorldPoint(new Vector3(gridTiles_screenPosition[icon_current].x,gridTiles_screenPosition[icon_current].y-(gridTiles_height[icon_current]/2)+30F,gridTiles_screenPosition[icon_current].z));		
@@ -908,14 +854,12 @@ public class newswallControl_grid1 : MonoBehaviour {
 						}
 							
 				    } else {
-						
-					   icon_bool[i] = false;
 							
-				     } 
+					   icon_bool[i] = false;	
+				    } 
 						
 					if (icon_colorBool[i])
-					{
-							
+					{		
 						if (readmoreTile[i].renderer.material.color.a < 1F) readmoreTile[i].renderer.material.color+=new Color(0F,0F,0F,Time.fixedDeltaTime*3F);
 						
 						if (!fader)
@@ -950,9 +894,16 @@ public class newswallControl_grid1 : MonoBehaviour {
 					{	
 					   if (scrollBool)
 					   {
-							if ( ( t.position.y > ( gridTiles_startY[i] + gridTiles_height[i] / 2 )) && (t.position.y < gridTiles_endY[i] ) )
+							if ( ( t.position.y > ( gridTiles_startY[i] + gridTiles_height[i] / 2 )) && (t.position.y < gridTiles_endY[i] ))
 							{												
 							    scrollUp_time = Time.time;
+									
+								scrollBoolUp = true;	
+							}
+								
+							if ( (Vector2.Distance(TouchVector,Cam.camera.ScreenToViewportPoint(new Vector2(gridTiles_startX[i] + gridTiles_width[i] / 2,gridTiles_startY[i] + gridTiles_height[i] / 1.2f))) < 0.1f) || (Vector2.Distance(TouchVector,Cam.camera.ScreenToViewportPoint(new Vector2(gridTiles_startX[i] + gridTiles_width[i] / 2,gridTiles_startY[i] + gridTiles_height[i]))) < 0.1f) || (Vector2.Distance(TouchVector,Cam.camera.ScreenToViewportPoint(new Vector2(gridTiles_startX[i] + gridTiles_width[i] / 2,gridTiles_startY[i] + gridTiles_height[i] / 1.1F))) < 0.1f) )
+							{
+								scrollUp_time = Time.time;
 									
 								scrollBoolUp = true;	
 							}
@@ -965,6 +916,17 @@ public class newswallControl_grid1 : MonoBehaviour {
 									
 								 readmoreTile_fadeBool[i] = true;	
 							}
+								
+							if ( (Vector2.Distance(TouchVector,Cam.camera.ScreenToViewportPoint(new Vector2(gridTiles_startX[i] + gridTiles_width[i] / 2,gridTiles_endY[i] -  gridTiles_height[i] / 1.2f))) < 0.1f && gridTiles[i].renderer.material.mainTextureOffset.y >= 0F) || (Vector2.Distance(TouchVector,Cam.camera.ScreenToViewportPoint(new Vector2(gridTiles_startX[i] + gridTiles_width[i] / 2,gridTiles_endY[i] -  gridTiles_height[i]))) < 0.1f && gridTiles[i].renderer.material.mainTextureOffset.y >= 0F) || (Vector2.Distance(TouchVector,Cam.camera.ScreenToViewportPoint(new Vector2(gridTiles_startX[i] + gridTiles_width[i] / 2,gridTiles_endY[i] -  gridTiles_height[i] / 1.1f))) < 0.1f && gridTiles[i].renderer.material.mainTextureOffset.y >= 0F) )
+							{
+								scrollDown_time = Time.time;	
+									
+								scrollBoolDown = true;
+									
+								readmoreTile_fadeBool[i] = true;	
+									
+							}
+								
 						 }
 							
 							if (scrollBoolUp)
@@ -993,18 +955,14 @@ public class newswallControl_grid1 : MonoBehaviour {
 			 if (gridTiles_tileTypeArr[i]=="scroll")
 			 {
 				if (gridTiles_texture[i].width > gridTiles_width[i])
-				{
-						
+				{	
 	         		gridHorizontal_offset =  Mathf.Repeat((Time.time * 0.05f) * Time.fixedDeltaTime * gridHorizontal_speed ,1.0f); 
 		
-		 			gridTiles[i].renderer.material.SetTextureOffset("_MainTex", new Vector2(gridHorizontal_offset,0.0f));	
-									
-				}
-						
+		 			gridTiles[i].renderer.material.SetTextureOffset("_MainTex", new Vector2(gridHorizontal_offset,0.0f));			
+				}		
 			  }
 			}
 				
-		
 			for (int i=0;i<gridTiles.Length;i++)
 			{
 			  if (gridTiles_tileTypeArr[i]!="scroll") 
@@ -1016,15 +974,12 @@ public class newswallControl_grid1 : MonoBehaviour {
 				  if ( Vector2.Distance(TouchVector,actionButton_position[i]) < 0.05F)
 				   {
 					   actionButton_selected = i;
-					   
 					   actionButton_active = true;		
 				   }	
 				}	
 				
-			
 				if (gridTiles[i].renderer.material.mainTextureOffset.x==0F)
-				{
-					
+				{	
 				 if (switchTile_ready)
 				 {
 			   		if ( Vector2.Distance(TouchVector,gridTiles_position[i])<0.1F && switchTile_active)
@@ -1092,8 +1047,7 @@ public class newswallControl_grid1 : MonoBehaviour {
 			 if (gridTiles[switchTile_selected2].renderer.material.mainTextureOffset.x != 0F)
 			 {			
 				if (gridTiles_tileTypeArr[switchTile_selected2]=="switch" || gridTiles_tileTypeArr[switchTile_selected2]=="switchphoto" || gridTiles_tileTypeArr[switchTile_selected2]=="switchinfo" || gridTiles_tileTypeArr[switchTile_selected2]=="switchaudio")
-				{
-							
+				{		
 			        if (switchTile_inc2>0F) switchTile_inc2-=(0.05F)/2F;		
 						
 			        gridTiles[switchTile_selected2].renderer.material.SetTextureOffset("_MainTex", new Vector2(switchTile_inc2,0.0f));
@@ -1133,17 +1087,15 @@ public class newswallControl_grid1 : MonoBehaviour {
 				   Debug.Log(actionButton_timeStore);
 			   }
 					
-			   if (Time.time < (actionButton_timeStore+3F))  actionButton[actionButton_selected].renderer.material.color = new Color(Mathf.PingPong(Time.fixedTime*2.5f,1F),Mathf.PingPong(Time.fixedTime*2.5f,1F),Mathf.PingPong(Time.fixedTime*2.5f,1F));	
+			   if (Time.time < (actionButton_timeStore+3F))  actionButton[actionButton_selected].renderer.material.color = new Color(Mathf.SmoothStep(0f,1f,Mathf.PingPong(Time.fixedTime*2.5f,1F)),Mathf.SmoothStep(0f,1f,Mathf.PingPong(Time.fixedTime*2.5f,1F)),Mathf.SmoothStep(0f,1f,Mathf.PingPong(Time.fixedTime*2.5f,1F)));	
 			   
 			   if (Time.time > (actionButton_timeStore+3F)) 
 			   { 
-				
 				  if (actionButton[actionButton_selected].renderer.material.color.r<1f && !fadeOut)	actionButton[actionButton_selected].renderer.material.color += new Color((Time.fixedDeltaTime*14f)/3.5f,(Time.fixedDeltaTime*14f)/3.5f,(Time.fixedDeltaTime*14f)/3.5f,(Time.fixedDeltaTime*14f)/3.5f);
 				 
 				  if (Time.time > (actionButton_timeStore+3.25F))  actionButton_fadeOut(34f);
 				  if (Time.time > (actionButton_timeStore+3.45F))  fadeAllOut(14f);
 				 
-				
 				  if (gridTiles_tileTypeArr[actionButton_selected]=="switch" || gridTiles_tileTypeArr[actionButton_selected]=="switchphoto" || gridTiles_tileTypeArr[actionButton_selected]=="switchinfo" || gridTiles_tileTypeArr[actionButton_selected]=="switchaudio")
 				  {
 					TouchVector.x=1000F;
@@ -1154,17 +1106,15 @@ public class newswallControl_grid1 : MonoBehaviour {
 					  if (switchTile_inc3>0F) switchTile_inc3-=(0.05F)/1F;		
 			          gridTiles[actionButton_selected].renderer.material.SetTextureOffset("_MainTex", new Vector2(switchTile_inc3,0.0f));			
 					}
+							
 				   }
 						
 				   if (Time.time > (actionButton_timeStore+4.0F)) loaderHUB._loaderHUB(grid_identifier,gridTiles_tileTypeArr,actionButton_selected);
 			   }
 					
-			  }
-				
-				
-				
+			  }	
 		  
-		 }
+			}
 			
 			
 
